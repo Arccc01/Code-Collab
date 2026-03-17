@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import axiosInstance from '../api/axios'
+import './Auth.css'
 
 const Register = () => {
   const navigate = useNavigate()
@@ -11,6 +12,8 @@ const Register = () => {
 
   const [formData, setFormData] = useState({
     username: '',
+    firstname: '',
+    lastname: '',
     email: '',
     password: '',
   })
@@ -27,9 +30,17 @@ const Register = () => {
     setLoading(true)
 
     try {
-      const response = await axiosInstance.post('/auth/register', formData)
-      const { token, user } = response.data
+      const response = await axiosInstance.post('/auth/register', {
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+        fullname: {
+          firstname: formData.firstname,
+          lastname: formData.lastname,
+        }
+      })
 
+      const { token, user } = response.data
       login(token, user)
       navigate('/dashboard')
 
@@ -41,53 +52,97 @@ const Register = () => {
   }
 
   return (
-    <div>
-      <h2>Register</h2>
+    <div className="auth-page">
+      <div className="auth-card">
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+        {/* Logo */}
+        <div className="auth-logo">⬡ CodeCollab</div>
+        <div className="auth-subtitle">Create your account</div>
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Username</label>
-          <input
-            type="text"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            required
-          />
+        {/* Error */}
+        {error && <div className="auth-error">{error}</div>}
+
+        {/* Form */}
+        <form className="auth-form" onSubmit={handleSubmit}>
+
+          {/* First name + Last name side by side */}
+          <div className="form-row">
+            <div className="form-group">
+              <label>First Name</label>
+              <input
+                type="text"
+                name="firstname"
+                value={formData.firstname}
+                onChange={handleChange}
+                placeholder="John"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>Last Name</label>
+              <input
+                type="text"
+                name="lastname"
+                value={formData.lastname}
+                onChange={handleChange}
+                placeholder="Doe"
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label>Username</label>
+            <input
+              type="text"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              placeholder="johndoe"
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Email</label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="you@example.com"
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="••••••••"
+              required
+            />
+          </div>
+
+          <button
+            className="auth-btn"
+            type="submit"
+            disabled={loading}
+          >
+            {loading ? 'Creating account...' : 'Create Account'}
+          </button>
+
+        </form>
+
+        {/* Footer */}
+        <div className="auth-footer">
+          Already have an account?{' '}
+          <Link to="/login">Sign In</Link>
         </div>
 
-        <div>
-          <label>Email</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div>
-          <label>Password</label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <button type="submit" disabled={loading}>
-          {loading ? 'Registering...' : 'Register'}
-        </button>
-      </form>
-
-      <p>
-        Already have an account? <Link to="/login">Login</Link>
-      </p>
+      </div>
     </div>
   )
 }

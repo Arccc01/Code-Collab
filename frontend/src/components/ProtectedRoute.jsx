@@ -10,7 +10,7 @@ const ProtectedRoute = ({ children }) => {
   }
 
   // If not logged in redirect to login
-  if (!user || !token) {
+  if (!user) {
     return <Navigate to="/login" replace />
   }
 

@@ -1,8 +1,8 @@
-import { io } from 'socket.io-client'
+import { io } from "socket.io-client";
 
-
-const socket = io(`${import.meta.env.backend_url}`, {
+const socket = io(`${import.meta.env.VITE_backend_url}`, {
   autoConnect: false, // only connect when user is logged in
-})
+  withCredentials:true
+});
 
-export default socket
+export default socket;

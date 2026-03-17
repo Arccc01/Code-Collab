@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import axiosInstance from '../api/axios'
+import './Auth.css'
 
 const Login = () => {
   const navigate = useNavigate()
@@ -26,10 +27,8 @@ const Login = () => {
     try {
       const response = await axiosInstance.post('/auth/login', formData)
       const { token, user } = response.data
-
       login(token, user)
       navigate('/dashboard')
-
     } catch (err) {
       setError(err.response?.data?.message || 'Something went wrong')
     } finally {
@@ -38,44 +37,61 @@ const Login = () => {
   }
 
   return (
-    <div>
-      <h2>Login</h2>
+    <div className="auth-page">
+      <div className="auth-card">
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+        {/* Logo */}
+        <div className="auth-logo">⬡ CodeCollab</div>
+        <div className="auth-subtitle">Sign in to your account</div>
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
+        {/* Error */}
+        {error && <div className="auth-error">{error}</div>}
+
+        {/* Form */}
+        <form className="auth-form" onSubmit={handleSubmit}>
+
+          <div className="form-group">
+            <label>Email</label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="you@example.com"
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="••••••••"
+              required
+            />
+          </div>
+
+          <button
+            className="auth-btn"
+            type="submit"
+            disabled={loading}
+          >
+            {loading ? 'Signing in...' : 'Sign In'}
+          </button>
+
+        </form>
+
+        {/* Footer */}
+        <div className="auth-footer">
+          Don't have an account?{' '}
+          <Link to="/register">Create one</Link>
         </div>
 
-        <div>
-          <label>Password</label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <button type="submit" disabled={loading}>
-          {loading ? 'Logging in...' : 'Login'}
-        </button>
-      </form>
-
-      <p>
-        Don't have an account? <Link to="/register">Register</Link>
-      </p>
+      </div>
     </div>
   )
 }
-
 export default Login

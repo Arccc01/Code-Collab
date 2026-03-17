@@ -7,17 +7,22 @@ const sessionModel = require("../models/session.model");
 const messageModel = require("../models/message.model");
 
 function initsocketserver(httpServer) {
-  const io = new Server(httpServer, {});
+  const io = new Server(httpServer, {
+  cors: {
+    origin: process.env.VITE_URL,
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
 
   io.use(async (socket, next) => {
-    const cookies = cookie.parse(socket.handshake.headers?.cookie || "");
-    if (!cookies.token) {
+    const token = socket.handshake.auth?.token
+    if (!token) {
       next(new Error("Authentication Error:No token provided"));
     }
 
     try {
-      const decoded = jwt.verify(cookies.token, process.env.JWT_SECRET);
-      console.log(decoded);
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const user = await userModel.findById(decoded.id);
       socket.user = user;
       next();
@@ -34,6 +39,10 @@ function initsocketserver(httpServer) {
     //join session
     socket.on("join-session", async (sessionId) => {
       try {
+
+        console.log('join-session fired')
+        console.log('socket.user', socket.user)
+        console.log('sessionId', sessionId)
         // 1. Join the socket room
         socket.join(sessionId);
 
@@ -52,6 +61,7 @@ function initsocketserver(httpServer) {
           userId: socket.user._id,
           username: socket.user.username,
         });
+
 
         const session = await sessionModel.findOne({ sessionId });
         if (session) {
@@ -170,28 +180,34 @@ function initsocketserver(httpServer) {
           content,
         });
         await newMessage.save();
-        const populateMessage = await newMessage.populate(
+        const populatedMessage = await newMessage.populate(
           "sender",
           "email username",
         );
-        socket.to(sessionId).emit("recieve-message", { content });
-      } catch (err) {
-        console.log("error in sending message", err);
-        socket.emit("error", { message: "failed to send message" });
-
-        io.to(sessionId).emit("receive-message", {
+        io.to(sessionId).emit("receive-message", ({
           _id: populatedMessage._id,
           sessionId: populatedMessage.sessionId,
           content: populatedMessage.content,
           sender: populatedMessage.sender,
           createdAt: populatedMessage.createdAt,
-        });
+        } ));
 
         console.log(
           ` ${socket.user.username} sent a message in session: ${sessionId}`,
         );
+
+      } catch (err) {
+        console.log("error in sending message", err);
+        socket.emit("error", { message: "failed to send message" });
       }
     });
+    // ─── Share peerId with room when user joins ────────────────────────────────
+      socket.on('peer-ready', ({ sessionId, peerId }) => {
+        socket.to(sessionId).emit('user-peer-ready', {
+          userId: socket.user._id,
+          peerId,
+        })
+})
   });
 }
 
