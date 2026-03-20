@@ -4,6 +4,7 @@ import Login from '../pages/Login'
 import Register from '../pages/Register'
 import Dashboard from '../pages/Dashboard'
 import Session from '../pages/Session'
+import AuthCallback from '../pages/AuthCallback'
 
 const App = () => {
   return (
@@ -12,6 +13,7 @@ const App = () => {
       {/* Public routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+       <Route path="/auth/callback" element={<AuthCallback />} />
 
       {/* Protected routes */}
       <Route

@@ -51,6 +51,10 @@ const Register = () => {
     }
   }
 
+  const handleGoogleLogin = () => {
+    window.location.href = 'http://localhost:3000/auth/google'
+  }
+
   return (
     <div className="auth-page">
       <div className="auth-card">
@@ -132,6 +136,26 @@ const Register = () => {
             disabled={loading}
           >
             {loading ? 'Creating account...' : 'Create Account'}
+          </button>
+
+          {/* Divider */}
+          <div className="auth-divider">
+            <span>or</span>
+          </div>
+
+          {/* Google button */}
+          <button
+            className="auth-google-btn"
+            type="button"
+            onClick={handleGoogleLogin}
+          >
+            <img
+              src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+              alt="Google"
+              width="18"
+              height="18"
+            />
+            Continue with Google
           </button>
 
         </form>

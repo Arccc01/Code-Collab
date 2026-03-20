@@ -1,3 +1,5 @@
+// src/pages/Login.jsx
+
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
@@ -34,6 +36,10 @@ const Login = () => {
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleGoogleLogin = () => {
+    window.location.href = 'http://localhost:3000/auth/google'
   }
 
   return (
@@ -82,6 +88,26 @@ const Login = () => {
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
 
+          {/* Divider */}
+          <div className="auth-divider">
+            <span>or</span>
+          </div>
+
+          {/* Google button */}
+          <button
+            className="auth-google-btn"
+            type="button"
+            onClick={handleGoogleLogin}
+          >
+            <img
+              src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+              alt="Google"
+              width="18"
+              height="18"
+            />
+            Continue with Google
+          </button>
+
         </form>
 
         {/* Footer */}
@@ -94,4 +120,5 @@ const Login = () => {
     </div>
   )
 }
+
 export default Login

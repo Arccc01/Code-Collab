@@ -22,6 +22,16 @@ const userSchema = new mongoose.Schema({
     },
     password:{
         type : String
+    },
+    googleId: {
+      type: String,
+      sparse: true, // allows multiple null values without unique conflict
+      unique: true,
+    },
+
+    avatar: {
+      type: String, // stores Google profile picture URL
+      default: null,
     }
 },{timestamps : true});
 

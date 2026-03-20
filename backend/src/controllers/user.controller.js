@@ -85,4 +85,25 @@ async function userlogout(req, res) {
   });
 }
 
-module.exports = { userRegister, userlogin, userlogout };
+async function redirectController(req, res){
+    const user = req.user;
+
+    // Sign JWT with same payload as normal login
+    const token = jwt.sign(
+      {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        fullname: user.fullname,
+        avatar: user.avatar,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" },
+    );
+
+    // Redirect to frontend with token in URL
+    // Frontend will read it and store in localStorage
+    res.redirect(`${process.env.VITE_URL}/auth/callback?token=${token}`);
+  }
+
+module.exports = { userRegister, userlogin, userlogout,redirectController };
