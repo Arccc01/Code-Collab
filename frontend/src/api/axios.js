@@ -9,7 +9,6 @@ axiosInstance.interceptors.request.use(
     const token = localStorage.getItem('token')
 
     if (token) {
-      // ✅ initialize headers if they don't exist yet
       if (!config.headers) {
         config.headers = {}
       }
