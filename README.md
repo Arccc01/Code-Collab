@@ -121,7 +121,3 @@ codecollab/
 [MIT](LICENSE)
 
 ---
-
-<div align="center">
-  Built with love for developers who code together
-</div>
