@@ -15,5 +15,4 @@ router.get('/:sessionId/messages',authmiddleware,sessionMessageController)
 // ─── Get a single session by sessionId ───────────────────────────────────────
 router.get('/:sessionId', authmiddleware,singleSessionController );
 
-
 module.exports = router

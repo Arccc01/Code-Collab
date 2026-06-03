@@ -91,7 +91,7 @@ async function redirectController(req, res){
     // Sign JWT with same payload as normal login
     const token = jwt.sign(
       {
-        _id: user._id,
+        id: user._id,
         username: user.username,
         email: user.email,
         fullname: user.fullname,

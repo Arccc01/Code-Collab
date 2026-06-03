@@ -20,10 +20,9 @@ function initsocketserver(httpServer) {
     if (!token) {
       next(new Error("Authentication Error:No token provided"));
     }
-
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const user = await userModel.findById(decoded._id);
+      const user = await userModel.findById(decoded.id);
       if (!user) {
       return next(new Error("Authentication Error: User not found"))
     }

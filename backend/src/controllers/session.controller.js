@@ -4,7 +4,7 @@ const messageModel = require('../models/message.model')
 
 
 async function createSessionController(req,res){
-   try{ 
+   try{
     const user = req.user;
     const newSession = new sessionModel({
         sessionId : uuidv4(),
@@ -23,7 +23,6 @@ async function createSessionController(req,res){
 
 async function singleSessionController(req, res) {
   try {
-    
     const session = await sessionModel.findOne({ sessionId: req.params.sessionId })
       .populate('owner', 'username email')
       .populate('participants', 'username email');
