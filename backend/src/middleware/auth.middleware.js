@@ -2,7 +2,6 @@ const userModel = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 
 async function authmiddleware(req, res, next) {
-  // ✅ read from Authorization header instead of cookies
   const authHeader = req.headers.authorization
 
   if (!authHeader || !authHeader.startsWith('Bearer')) {
