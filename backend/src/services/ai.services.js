@@ -8,7 +8,6 @@ async function generateReview(prompt) {
     model: "gemini-3-flash-preview",
     contents: prompt,
   });
-  console.log(response.text);
   return response.text;
 }
 

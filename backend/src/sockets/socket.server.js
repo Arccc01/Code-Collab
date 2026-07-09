@@ -37,14 +37,9 @@ function initsocketserver(httpServer) {
   const debounceTimers = new Map();
 
   io.on("connection", (socket) => {
-    console.log("user is connected", socket.user.username, socket.user.id);
     //join session
     socket.on("join-session", async (sessionId) => {
       try {
-
-        console.log('join-session fired')
-        console.log('socket.user', socket.user)
-        console.log('sessionId', sessionId)
         // 1. Join the socket room
         socket.join(sessionId);
 
@@ -73,9 +68,6 @@ function initsocketserver(httpServer) {
           });
         }
 
-        console.log(
-          ` ${socket.user.fullname.firstname} joined session: ${sessionId}`,
-        );
       } catch (err) {
         console.error("join-session error:", err);
         socket.emit("error", { message: "Failed to join session" });
@@ -97,9 +89,7 @@ function initsocketserver(httpServer) {
           username: socket.user.username,
         });
 
-        console.log(
-          ` ${socket.user.fullname.firstname} left session: ${sessionId}`,
-        );
+        
       } catch (err) {
         console.error("leave-session error:", err);
         socket.emit("error", { message: "Failed to leave session" });
@@ -117,9 +107,7 @@ function initsocketserver(httpServer) {
             username: socket.user.username,
           });
 
-          console.log(
-            ` ${socket.user.fullname.firstname} disconnected from session: ${sessionId}`,
-          );
+          
         }
       } catch (err) {
         console.error("disconnect error:", err);
@@ -130,7 +118,6 @@ function initsocketserver(httpServer) {
       try {
         // 1. Instantly broadcast to everyone else in the room
         socket.to(sessionId).emit("code-update", { code: newCode });
-        console.log(newCode);
 
         // 2. Debounced DB save — only saves after user stops typing for 1.5s
         if (debounceTimers.has(sessionId)) {
@@ -144,7 +131,6 @@ function initsocketserver(httpServer) {
             { returnDocument: true },
           );
           debounceTimers.delete(sessionId);
-          console.log(`Code saved for session: ${sessionId}`);
         }, 1500);
 
         debounceTimers.set(sessionId, timer);
@@ -162,9 +148,6 @@ function initsocketserver(httpServer) {
         // 2. Save to DB immediately — language changes are infrequent
         await sessionModel.findOneAndUpdate({ sessionId }, { language });
 
-        console.log(
-          `🔤 Language changed to ${language} in session: ${sessionId}`,
-        );
       } catch (err) {
         console.error("language-change error:", err);
         socket.emit("error", { message: "Failed to sync language" });
@@ -194,12 +177,8 @@ function initsocketserver(httpServer) {
           createdAt: populatedMessage.createdAt,
         } ));
 
-        console.log(
-          ` ${socket.user.username} sent a message in session: ${sessionId}`,
-        );
 
       } catch (err) {
-        console.log("error in sending message", err);
         socket.emit("error", { message: "failed to send message" });
       }
     });
