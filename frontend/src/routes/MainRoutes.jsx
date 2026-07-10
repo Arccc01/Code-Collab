@@ -13,7 +13,7 @@ const App = () => {
       {/* Public routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-       <Route path="/auth/callback" element={<AuthCallback />} />
+       <Route path="/oauth/callback" element={<AuthCallback />} />
 
       {/* Protected routes */}
       <Route
