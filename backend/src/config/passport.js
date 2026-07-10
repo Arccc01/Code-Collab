@@ -50,6 +50,7 @@ passport.use(
             })
           }
         }
+        console.log("Passport verify callback");
 
         return done(null, user)
 

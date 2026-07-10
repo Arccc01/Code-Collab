@@ -103,7 +103,7 @@ async function redirectController(req, res){
 
     // Redirect to frontend with token in URL
     // Frontend will read it and store in localStorage
-    res.redirect(`/auth/callback?token=${token}`);
+    res.redirect(`/oauth/callback?token=${token}`);
   }
 
 module.exports = { userRegister, userlogin, userlogout,redirectController };

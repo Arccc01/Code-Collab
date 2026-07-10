@@ -27,7 +27,7 @@ router.get(
 router.get(
   "/google/callback",
   passport.authenticate("google", {
-    failureRedirect: `${process.env.FRONTEND_URL}/login?error=google_failed`,
+    failureRedirect: `/login?error=google_failed`,
     session: false,
   }),redirectController
 );
