@@ -1,5 +1,7 @@
 const { Resolver } = require('dns');
 const resolver = new Resolver();
+const express = require('express');
+const path = require('path');
 resolver.setServers(['8.8.8.8', '1.1.1.1']);
 require('dns').setDefaultResultOrder('ipv4first');
 require('dns').setServers(['8.8.8.8', '1.1.1.1']);
