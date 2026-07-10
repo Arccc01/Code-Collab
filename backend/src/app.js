@@ -21,7 +21,6 @@ app.use(
   })
 )
 
-console.log("Backend is running on port 3000,",path.join(__dirname, "public", "index.html"));
 
 
 // ─── Passport ─────────────────────────────────────────────────────────────
@@ -32,11 +31,21 @@ app.use("/api/auth", userRoutes);
 app.use("/api/sessions", sessionRoutes);
 app.use("/api/ai", aiRoutes);
 
+// Google OAuth callback directly on root path (without /api prefix) to match Google Console setting
+const { redirectController } = require("./controllers/user.controller");
+app.get(
+  "/auth/google/callback",
+  passport.authenticate("google", {
+    failureRedirect: "/login?error=google_failed",
+    session: false,
+  }),
+  redirectController
+);
+
 // React catch-all route 
 app.use(express.static(path.join(__dirname, "public")));
 app.get("/*path", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
-console.log("Backend is running on port 3000,",path.join(__dirname, "public"));
 
 module.exports = app;

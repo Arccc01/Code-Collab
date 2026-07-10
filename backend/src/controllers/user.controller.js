@@ -29,6 +29,7 @@ async function userRegister(req, res) {
   await user.save();
   const token = jwt.sign(
     {
+      _id: user._id,
       id: user._id,
       username: user.username,
       email: user.email,
@@ -37,10 +38,10 @@ async function userRegister(req, res) {
     process.env.JWT_SECRET,
   );
   res.cookie("token", token, {
-  httpOnly: true,
-  sameSite: "lax",
-  secure: false,        // false for localhost
-});
+    httpOnly: true,
+    sameSite: "lax",
+    secure: false,        // false for localhost
+  });
   res
     .status(201)
     .json({ message: "User registered successfully", token, user });
@@ -58,6 +59,7 @@ async function userlogin(req, res) {
   }
   const token = jwt.sign(
     {
+      _id: user._id,
       id: user._id,
       username: user.username,
       email: user.email,
@@ -69,7 +71,7 @@ async function userlogin(req, res) {
   res.status(200).json({
     token,
     user: {
-      message: "Login successful",
+      _id: user._id,
       email: user.email,
       username: user.username,
       fullname: user.fullname,
@@ -85,25 +87,26 @@ async function userlogout(req, res) {
   });
 }
 
-async function redirectController(req, res){
-    const user = req.user;
+async function redirectController(req, res) {
+  const user = req.user;
 
-    // Sign JWT with same payload as normal login
-    const token = jwt.sign(
-      {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        fullname: user.fullname,
-        avatar: user.avatar,
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" },
-    );
+  // Sign JWT with same payload as normal login
+  const token = jwt.sign(
+    {
+      _id: user._id,
+      id: user._id,
+      username: user.username,
+      email: user.email,
+      fullname: user.fullname,
+      avatar: user.avatar,
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: "7d" },
+  );
 
-    // Redirect to frontend with token in URL
-    // Frontend will read it and store in localStorage
-    res.redirect(`/oauth/callback?token=${token}`);
-  }
+  // Redirect to frontend with token in URL
+  // Frontend will read it and store in localStorage
+  res.redirect(`/oauth/callback?token=${token}`);
+}
 
-module.exports = { userRegister, userlogin, userlogout,redirectController };
+module.exports = { userRegister, userlogin, userlogout, redirectController };
