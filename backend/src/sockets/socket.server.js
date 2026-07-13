@@ -7,13 +7,7 @@ const sessionModel = require("../models/session.model");
 const messageModel = require("../models/message.model");
 
 function initsocketserver(httpServer) {
-  const io = new Server(httpServer, {
-  cors: {
-    origin: process.env.VITE_URL,
-    methods: ["GET", "POST"],
-    credentials: true
-  }
-});
+  const io = new Server(httpServer, {})
 
   io.use(async (socket, next) => {
     const token = socket.handshake.auth?.token
